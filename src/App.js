@@ -13,49 +13,53 @@ import DishList from "./pages/DishList";
 import DishDetails from "./pages/DishDetails";
 import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
+import { DiGhostSmall } from "react-icons/di";
+import { DishSearchProvider } from "./context/DishSearchContext";
 
 function App() {
   return (
     <AuthProviderComponent>
       <AuthProvider>
-        <Router>
-        <Header />
-          <div className="flex flex-col min-h-screen">
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/home" element={<Layout />}>
-                <Route index element={<HomePage />} />
-              </Route>
-              <Route path="/search" element={<Layout />}>
-                <Route index element={<SearchPage />} />
-              </Route>
-              <Route path="/notifications" element={<Layout />}>
-                <Route index element={<NotificationsPage />} />
-              </Route>
-              <Route path="/profile" element={<Layout />}>
-                <Route index element={<ProfilePage />} />
-              </Route>
-              <Route
-            path="/dish-list"
-            element={
-              <div className="container-fluid flex-grow-1">
-                <div className="row h-100">
-                  <div className="col-md-6 overflow-auto">
-                    <DishList />
-                  </div>
+        <DishSearchProvider>
+          <Router>
+            <Header />
+            <div className="flex flex-col min-h-screen">
+              <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/home" element={<Layout />}>
+                  <Route index element={<HomePage />} />
+                </Route>
+                <Route path="/search" element={<Layout />}>
+                  <Route index element={<SearchPage />} />
+                </Route>
+                <Route path="/notifications" element={<Layout />}>
+                  <Route index element={<NotificationsPage />} />
+                </Route>
+                <Route path="/profile" element={<Layout />}>
+                  <Route index element={<ProfilePage />} />
+                </Route>
+                <Route
+                  path="/dish-list"
+                  element={
+                    <div className="container-fluid flex-grow-1">
+                      <div className="row h-100">
+                        <div className="col-md-6 overflow-auto">
+                          <DishList />
+                        </div>
 
-                  <div className="col-md-6 p-0">
-                    <MapView />
-                  </div>
-                </div>
-              </div>
-            }
-          />
-          <Route path="/dish/:id" element={<DishDetails />} />
-          <Route path="/list-dish" element={<ListDish />} />
-            </Routes>
-          </div>
-        </Router>
+                        <div className="col-md-6 p-0">
+                          <MapView />
+                        </div>
+                      </div>
+                    </div>
+                  }
+                />
+                <Route path="/dish/:id" element={<DishDetails />} />
+                <Route path="/list-dish" element={<ListDish />} />
+              </Routes>
+            </div>
+          </Router>
+        </DishSearchProvider>
       </AuthProvider>
     </AuthProviderComponent>
   );

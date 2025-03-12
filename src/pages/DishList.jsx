@@ -1,6 +1,7 @@
 import DishCard from "../components/DishCard";
+import { useDishSearch } from "../context/DishSearchContext";
 
-const dishes = [
+/*const dishes = [
   {
     id: "1",
     imageUrl: "../../public/momos.jpeg",
@@ -38,16 +39,24 @@ const dishes = [
     availableUntil: "8:30 PM",
   },
 ];
-
+*/
 const DishList = () => {
+  const { dishes } = useDishSearch();
+  console.log(dishes);
+  const dishesArr = dishes ? dishes.data : [];
+  console.log("dishesArr", dishesArr);
   return (
     <div className="container mt-3">
       <h4 className="fw-bold">Available Dishes</h4>
-      <div className="d-flex flex-wrap gap-3">
-        {dishes.map((dish) => (
-          <DishCard key={dish.id} {...dish} />
-        ))}
-      </div>
+      {dishes.length === 0 ? (
+        <p className="text-muted">No dishes found. Try another search.</p>
+      ) : (
+        <div className="d-flex flex-wrap gap-3">
+          {dishesArr.map((dish) => (
+            <DishCard key={dish.DishID} {...dish} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

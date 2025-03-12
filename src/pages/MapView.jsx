@@ -6,7 +6,7 @@ const defaultCenter = { lat: 37.7749, lng: -122.4194 };
 
 const MapView = () => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
 
