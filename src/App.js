@@ -8,12 +8,10 @@ import SearchPage from "./pages/SearchPage"; // Create this page
 import NotificationsPage from "./pages/NotificationsPage"; // Create this page
 import AuthProviderComponent from "./components/AuthProvider";
 import Layout from "./Layout";
-import Header from "./components/Header";
 import DishList from "./pages/DishList";
 import DishDetails from "./pages/DishDetails";
 import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
-import { DiGhostSmall } from "react-icons/di";
 import { DishSearchProvider } from "./context/DishSearchContext";
 
 function App() {
@@ -22,7 +20,6 @@ function App() {
       <AuthProvider>
         <DishSearchProvider>
           <Router>
-            <Header />
             <div className="flex flex-col min-h-screen">
               <Routes>
                 <Route path="/" element={<LoginPage />} />
