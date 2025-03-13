@@ -133,9 +133,9 @@ const Header = () => {
         <div className="d-flex align-items-center ms-3">
           <div className="position-relative me-3">
             <FaShoppingCart size={20} />
-            {/*<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
               1
-            </span>*/}
+            </span>
           </div>
           <LoginButton
             label="Log in"

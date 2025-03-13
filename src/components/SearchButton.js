@@ -17,14 +17,12 @@ const SearchButton = ({ location, radius }) => {
       return;
     }
 
-    const radiusInMeters = radius * 1609.34;
-
     setLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-        `http://localhost:9091/dishes/search?latitude=${location.lat}&longitude=${location.lng}&radius=${radiusInMeters}&pageSize=10`
+        `http://localhost:9091/dishes/search?latitude=${location.lat}&longitude=${location.lng}&radius=${radius}&pageSize=10`
       );
 
       if (!response.ok) {

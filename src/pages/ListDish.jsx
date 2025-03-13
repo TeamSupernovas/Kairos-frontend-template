@@ -4,7 +4,6 @@ import { CancelButton, SubmitButton } from "../components/Button";
 
 const ListDish = () => {
   const { user, isAuthenticated } = useAuth(); // Get user from Auth0
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const [dish, setDish] = useState({
     dish_name: "",
@@ -38,12 +37,6 @@ const ListDish = () => {
   }, [user, isAuthenticated]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "price") {
-      const regex = /^\d+(\.\d{0,2})?$/;
-      if (!regex.test(value) && value !== "") return;
-    }
     setDish({ ...dish, [e.target.name]: e.target.value });
   };
 
@@ -132,7 +125,7 @@ const ListDish = () => {
 
       if (response.ok) {
         console.log("Dish successfully listed");
-        setShowSuccessPopup(true);
+        console.log(await response.json());
         handleCancel();
       } else {
         const errorData = await response.json();
@@ -307,20 +300,6 @@ const ListDish = () => {
               />
             </div>
           </form>
-          {showSuccessPopup && (
-            <div
-              className="alert alert-success position-fixed top-50 start-50 translate-middle text-center shadow-lg"
-              style={{ zIndex: 1050, padding: "20px", borderRadius: "10px" }}
-            >
-              <p>Dish successfully listed!</p>
-              <button
-                className="btn btn-success mt-2"
-                onClick={() => setShowSuccessPopup(false)}
-              >
-                OK
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
