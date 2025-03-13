@@ -125,6 +125,7 @@ const ListDish = () => {
 
       if (response.ok) {
         console.log("Dish successfully listed");
+        console.log(await response.json());
         handleCancel();
       } else {
         const errorData = await response.json();

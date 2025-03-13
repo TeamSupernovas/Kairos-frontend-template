@@ -15,8 +15,23 @@ import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
 import { DiGhostSmall } from "react-icons/di";
 import { DishSearchProvider } from "./context/DishSearchContext";
+import Checkout from "./pages/Checkout";
+import { useEffect, useState } from "react";
 
 function App() {
+  //includes all the dishes that the user has added to the cart
+// Load cart from localStorage or initialize as an empty array
+const [cart, setCart] = useState(() => {
+  const savedCart = localStorage.getItem('cart');
+  return savedCart ? JSON.parse(savedCart) : [];
+});
+
+// Use effect to sync cart changes with localStorage
+useEffect(() => {
+  if (cart.length > 0) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+}, [cart]);  // Only update localStorage when cart changes
   return (
     <AuthProviderComponent>
       <AuthProvider>
@@ -54,8 +69,9 @@ function App() {
                     </div>
                   }
                 />
-                <Route path="/dish/:id" element={<DishDetails />} />
+                <Route path="/dish/:id" element={<DishDetails cart={cart} setCart={setCart}/>} />
                 <Route path="/list-dish" element={<ListDish />} />
+                <Route path="/cart" element={<Checkout cart={cart} setCart={setCart}/>} />
               </Routes>
             </div>
           </Router>

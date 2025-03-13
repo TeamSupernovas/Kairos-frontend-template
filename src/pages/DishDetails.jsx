@@ -1,11 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const DishDetails = () => {
+const DishDetails = ({cart, setCart}) => {
   const { id } = useParams(); // Get the dish ID from URL
 
   const [dishData, setDishData] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const order = (dishData, quantity) => {
+    setCart((prevCart) => {
+      const updatedCart = prevCart.find((item) => item.dish_id === dishData.dish_id)
+        ? prevCart.map((item) =>
+            item.dish_id === dishData.dish_id
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          )
+        : [...prevCart, { ...dishData, quantity }];
+      
+      // Save the updated cart to localStorage
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      console.log(cart);
+      return updatedCart;
+    });
+  };
+  
+
 
   useEffect(() => {
     async function fetchDishDetails() {
@@ -78,7 +96,7 @@ const DishDetails = () => {
               </option>
             ))}
           </select>
-          <button className="btn btn-success w-100 mt-3 py-2 fw-bold">
+          <button className="btn btn-success w-100 mt-3 py-2 fw-bold" onClick={()=>order(dishData, quantity)}>
             Order Now
           </button>
         </div>
