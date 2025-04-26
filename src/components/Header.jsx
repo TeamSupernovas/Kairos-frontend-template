@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { FaShoppingCart } from "react-icons/fa";
 import { LoginButton, SignUpButton } from "../components/Button";
 import SearchButton from "../components/SearchButton";
+import { useCart } from "../context/CartContext"; // Import CartContext
 
 // Google Maps Config
 const libraries = ["places"];
@@ -14,6 +16,8 @@ const Header = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
+
+  const { cartItems } = useCart(); 
 
   const [radius, setRadius] = useState("");
   const [location, setLocation] = useState("");
@@ -131,12 +135,16 @@ const Header = () => {
 
         {/* Shopping Cart, Login & Sign Up */}
         <div className="d-flex align-items-center ms-3">
-          <div className="position-relative me-3">
-            <FaShoppingCart size={20} />
-            {/*<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-              1
-            </span>*/}
-          </div>
+        <div className="d-flex align-items-center ms-3">
+        <Link to="/cart" className="position-relative me-3">
+        <FaShoppingCart size={20} />
+        {cartItems.length > 0 && (
+        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+        {cartItems.length}
+        </span>
+        )}
+        </Link>
+        </div>
           <LoginButton
             label="Log in"
             onClick={() => console.log("Login Clicked")}

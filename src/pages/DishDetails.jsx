@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext"; // Import Cart Context
 
 const DishDetails = () => {
   const { id } = useParams(); // Get the dish ID from URL
-
   const [dishData, setDishData] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart(); // Use Cart Context
 
   useEffect(() => {
     async function fetchDishDetails() {
@@ -13,18 +14,34 @@ const DishDetails = () => {
         return;
       }
       const response = await fetch(`http://localhost:8080/dishes/${id}`);
-
       if (!response.ok) {
         throw new Error("Failed to fetch dish details for " + id);
       }
-
       const data = await response.json();
-
       setDishData(data.dish);
       console.log("details set for ", id, ":", data);
     }
     fetchDishDetails();
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (!dishData.id || !dishData.chef_id) {
+      alert("Invalid dish data");
+      return;
+    }
+
+    const dishToAdd = {
+      id: dishData.id,
+      name: dishData.dish_name,
+      chef_id: dishData.chef_id,
+      available_portions: dishData.available_portions,
+      price: dishData.price,
+      quantity: quantity, // Set quantity based on user selection
+    };
+
+    addToCart(dishToAdd, quantity);
+    alert("Dish added to cart!");
+  };
 
   return (
     <div className="container mt-5">
@@ -32,7 +49,7 @@ const DishDetails = () => {
         <div className="col-md-6">
           <div className="position-relative">
             <img
-              src={dishData.images && dishData.images[0].image_url}
+              src={dishData.images && dishData.images[0]?.image_url}
               alt={dishData.dish_name}
               className="img-fluid rounded shadow"
             />
@@ -50,7 +67,7 @@ const DishDetails = () => {
           </p>
           <div className="mb-3">
             {dishData.dietary_category}
-            <span className="badge bg-secondary">{dishData.meal_course}</span>
+            <span className="badge bg-secondary ms-2">{dishData.meal_course}</span>
           </div>
           <h5 className="fw-bold">Description</h5>
           <p className="p-3 bg-light rounded">{dishData.description}</p>
@@ -72,14 +89,17 @@ const DishDetails = () => {
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
           >
-            {[...Array(dishData.available_portions).keys()].map((num) => (
+            {[...Array(dishData.available_portions || 1).keys()].map((num) => (
               <option key={num + 1} value={num + 1}>
                 {num + 1}
               </option>
             ))}
           </select>
-          <button className="btn btn-success w-100 mt-3 py-2 fw-bold">
-            Order Now
+          <button
+            onClick={handleAddToCart}
+            className="btn btn-success w-100 mt-3 py-2 fw-bold"
+          >
+            Add to Cart
           </button>
         </div>
       </div>
