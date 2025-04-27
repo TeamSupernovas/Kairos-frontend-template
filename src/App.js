@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage"; // Create this page
 import SearchPage from "./pages/SearchPage"; // Create this page
 import NotificationsPage from "./pages/NotificationsPage"; // Create this page
 import CartPage from "./pages/CartPage"; // Create this page
+import OrdersPage from "./pages/OrdersPage"; // Create this page
 import AuthProviderComponent from "./components/AuthProvider";
 import Layout from "./Layout";
 import DishList from "./pages/DishList";
@@ -57,6 +58,7 @@ function App() {
                 <Route path="/dish/:id" element={<DishDetails />} />
                 <Route path="/list-dish" element={<ListDish />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
               </Routes>
             </div>
           </Router>

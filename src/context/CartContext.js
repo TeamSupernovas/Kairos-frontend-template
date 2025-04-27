@@ -77,9 +77,19 @@ const [chefId, setChefId] = useState("chef123");
     setCartItems([]);
     setChefId(null);
   };
+  const updateCartItemQuantity = (dishId, delta) => {
+    setCartItems((prevItems) =>
+      prevItems.map(item =>
+        item.dish_id === dishId
+          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+          : item
+      )
+    );
+  };
+  
 
   return (
-    <CartContext.Provider value={{ cartItems, chefId, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems, chefId, addToCart, removeFromCart, clearCart, updateCartItemQuantity}}>
       {children}
     </CartContext.Provider>
   );
