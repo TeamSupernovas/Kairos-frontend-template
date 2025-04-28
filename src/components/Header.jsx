@@ -5,25 +5,28 @@ import { FaShoppingCart } from "react-icons/fa";
 import { LoginButton, SignUpButton } from "../components/Button";
 import SearchButton from "../components/SearchButton";
 import { useCart } from "../context/CartContext"; // Import CartContext
-
+import { useSelector } from "react-redux";
+import LogoutButton from "../components/LogoutButton";
+import { useNavigate } from 'react-router-dom';
 // Google Maps Config
 const libraries = ["places"];
 const containerStyle = { width: "100%", height: "300px" };
 const defaultCenter = { lat: 37.7749, lng: -122.4194 };
+
 
 const Header = () => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
-
+  const userId = useSelector((state) => state.auth.userId);
   const { cartItems } = useCart(); 
 
   const [radius, setRadius] = useState("");
   const [location, setLocation] = useState("");
   const [markerPosition, setMarkerPosition] = useState(defaultCenter);
   const [showUseLocation, setShowUseLocation] = useState(false);
-
+  const navigate = useNavigate();
   // Handle fetching current location
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -143,17 +146,25 @@ const Header = () => {
         {cartItems.length}
         </span>
         )}
+        
         </Link>
         </div>
-          <LoginButton
-            label="Log in"
-            onClick={() => console.log("Login Clicked")}
-          />
-          <div style={{ width: "20px" }}></div>
-          <SignUpButton
-            label="Sign up"
-            onClick={() => console.log("Sign Up Clicked")}
-          />
+        <div style={{ width: "20px" }}></div>
+        {userId ? (
+          <>    <LoginButton
+          label="Profile"
+          onClick={() => navigate('/profile')}
+        /><div style={{ width: "20px" }}></div><LogoutButton /></>
+
+  ) : (
+    <>
+    <LoginButton
+      label="Log in"
+      onClick={() => navigate('/login')}
+    />
+      <div style={{ width: "20px" }}></div>
+    </>
+  )}
         </div>
       </div>
 

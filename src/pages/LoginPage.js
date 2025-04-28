@@ -7,7 +7,7 @@ const LoginPage = () => {
   const { isAuthenticated } = useAuth0();
 
   if (isAuthenticated) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/search" />;
   }
 
   return (

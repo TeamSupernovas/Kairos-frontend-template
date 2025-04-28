@@ -16,9 +16,12 @@ import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
 import { DishSearchProvider } from "./context/DishSearchContext";
 import { CartProvider } from "./context/CartContext"; 
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 function App() {
   return (
+    <Provider store={store}>
     <AuthProviderComponent>
       <AuthProvider>
         <DishSearchProvider>
@@ -26,18 +29,11 @@ function App() {
           <Router>
             <div className="flex flex-col min-h-screen">
               <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/home" element={<Layout />}>
-                  <Route index element={<HomePage />} />
-                </Route>
-                <Route path="/search" element={<Layout />}>
+                <Route path="/" element={<SearchPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/profile" element={<ProfilePage />}/>
+                <Route path="/search">
                   <Route index element={<SearchPage />} />
-                </Route>
-                <Route path="/notifications" element={<Layout />}>
-                  <Route index element={<NotificationsPage />} />
-                </Route>
-                <Route path="/profile" element={<Layout />}>
-                  <Route index element={<ProfilePage />} />
                 </Route>
                 <Route
                   path="/dish-list"
@@ -66,6 +62,7 @@ function App() {
         </DishSearchProvider>
       </AuthProvider>
     </AuthProviderComponent>
+    </Provider>
   );
 }
 
