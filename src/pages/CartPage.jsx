@@ -1,6 +1,8 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import Profile from "../components/Profile";
+import ProfileHeader from "../components/ProfileHeader";
 
 const CartPage = () => {
   const { cartItems, chefId, clearCart, removeFromCart, updateCartItemQuantity } = useCart();
@@ -59,6 +61,8 @@ const CartPage = () => {
   };
 
   return (
+    <>
+    <ProfileHeader></ProfileHeader>
     <div className="container mt-5">
       <h1 className="fw-bold mb-4">Checkout</h1>
       {cartItems.length === 0 ? (
@@ -121,6 +125,7 @@ const CartPage = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

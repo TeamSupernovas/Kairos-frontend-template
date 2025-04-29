@@ -16,6 +16,7 @@ import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
 import { DishSearchProvider } from "./context/DishSearchContext";
 import { CartProvider } from "./context/CartContext"; 
+import { OrdersProvider } from "./context/OrdersContext";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
@@ -25,6 +26,7 @@ function App() {
     <AuthProviderComponent>
       <AuthProvider>
         <DishSearchProvider>
+        <OrdersProvider>
         <CartProvider>
           <Router>
             <div className="flex flex-col min-h-screen">
@@ -59,6 +61,7 @@ function App() {
             </div>
           </Router>
           </CartProvider>
+          </OrdersProvider>
         </DishSearchProvider>
       </AuthProvider>
     </AuthProviderComponent>
