@@ -12,6 +12,7 @@ import AuthProviderComponent from "./components/AuthProvider";
 import Layout from "./Layout";
 import DishList from "./pages/DishList";
 import DishDetails from "./pages/DishDetails";
+import ChefOrderDashboard from "./pages/ChefOrderDashboard";
 import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
 import { DishSearchProvider } from "./context/DishSearchContext";
@@ -19,10 +20,13 @@ import { CartProvider } from "./context/CartContext";
 import { OrdersProvider } from "./context/OrdersContext";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { ChefOrderProvider } from "./context/ChefOrderContext";
 
-function App() {
+function App() {  
+  const chefId = "chefid1";
   return (
     <Provider store={store}>
+      <ChefOrderProvider chefId={chefId}>
     <AuthProviderComponent>
       <AuthProvider>
         <DishSearchProvider>
@@ -57,6 +61,7 @@ function App() {
                 <Route path="/list-dish" element={<ListDish />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/dashboard" element={  <ChefOrderDashboard />}/>
               </Routes>
             </div>
           </Router>
@@ -65,6 +70,7 @@ function App() {
         </DishSearchProvider>
       </AuthProvider>
     </AuthProviderComponent>
+    </ChefOrderProvider>
     </Provider>
   );
 }

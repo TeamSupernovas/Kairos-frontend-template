@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // Import Cart Context
+import ProfileHeader from "../components/ProfileHeader"; // Import Profile Header
 
 const DishDetails = () => {
   const { id } = useParams(); // Get the dish ID from URL
@@ -25,13 +26,14 @@ const DishDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!dishData.id || !dishData.chef_id) {
+    console.log(dishData)
+    if (!dishData.dish_id || !dishData.chef_id) {
       alert("Invalid dish data");
       return;
     }
 
     const dishToAdd = {
-      id: dishData.id,
+      id: dishData.dish_id,
       name: dishData.dish_name,
       chef_id: dishData.chef_id,
       available_portions: dishData.available_portions,
@@ -44,6 +46,8 @@ const DishDetails = () => {
   };
 
   return (
+    <>
+    <ProfileHeader></ProfileHeader>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6">
@@ -104,6 +108,7 @@ const DishDetails = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

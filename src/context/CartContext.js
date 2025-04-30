@@ -1,40 +1,45 @@
-import { createContext, useContext, useState } from "react";
-
+import { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext"; // Import Auth context
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-//   const [cartItems, setCartItems] = useState([]);
+  const { user, isAuthenticated } = useAuth(); // Get user from Auth0
+  const [chefId, setChefId] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
 
-//   const [chefId, setChefId] = useState(null);
+  // Set the chefId from authenticated user
+  useEffect(() => {
+    if (isAuthenticated && user?.sub) {
+      const derivedChefId = user.sub.includes("|") ? user.sub.split("|")[1] : user.sub;
+      setChefId(derivedChefId);
 
-const defaultCartItems = [
-    {
-      dish_id: "dish001",
-      quantity: 2,
-      dish_order_status: "pending",
-      price_per_unit: 15,
-      chef_id: "chef123"
-    },
-    {
-      dish_id: "dish002",
-      quantity: 1,
-      dish_order_status: "pending",
-      price_per_unit: 20,
-      chef_id: "chef123"
-    },
-    {
-      dish_id: "dish003",
-      quantity: 3,
-      dish_order_status: "pending",
-      price_per_unit: 12    ,
-      chef_id: "chef123"
+      // Set default cart items using the derived chef ID
+      const defaultCartItems = [
+        {
+          dish_id: "dish001",
+          quantity: 2,
+          dish_order_status: "pending",
+          price_per_unit: 15,
+          chef_id: derivedChefId
+        },
+        {
+          dish_id: "dish002",
+          quantity: 1,
+          dish_order_status: "pending",
+          price_per_unit: 20,
+          chef_id: derivedChefId
+        },
+        {
+          dish_id: "dish003",
+          quantity: 3,
+          dish_order_status: "pending",
+          price_per_unit: 12,
+          chef_id: derivedChefId
+        }
+      ];
+      setCartItems(defaultCartItems);
     }
-  ];
-  
-
-const [cartItems, setCartItems] = useState(defaultCartItems);
-const [chefId, setChefId] = useState("chef123");
-
+  }, [user, isAuthenticated]);
 
   const addToCart = (dish) => {
     if (chefId && chefId !== dish.chef_id) {
@@ -77,6 +82,7 @@ const [chefId, setChefId] = useState("chef123");
     setCartItems([]);
     setChefId(null);
   };
+
   const updateCartItemQuantity = (dishId, delta) => {
     setCartItems((prevItems) =>
       prevItems.map(item =>
@@ -86,10 +92,9 @@ const [chefId, setChefId] = useState("chef123");
       )
     );
   };
-  
 
   return (
-    <CartContext.Provider value={{ cartItems, chefId, addToCart, removeFromCart, clearCart, updateCartItemQuantity}}>
+    <CartContext.Provider value={{ cartItems, chefId, addToCart, removeFromCart, clearCart, updateCartItemQuantity }}>
       {children}
     </CartContext.Provider>
   );
