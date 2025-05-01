@@ -36,14 +36,15 @@ export const ChefOrderProvider = ({ children }) => {
     }
   };
 
-  const updateOrderItemStatus = async (orderItemId, newStatus) => {
+  const updateOrderItemStatus = async (userId,chefId,orderItemId, newStatus) => {
+     console.log(userId+" "+chefId)
     try {
       const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/${orderItemId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ status: newStatus , user_id: userId, chef_id:chefId}),
       });
 
       if (!response.ok) {

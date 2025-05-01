@@ -7,6 +7,7 @@ import SearchButton from "../components/SearchButton";
 import { useCart } from "../context/CartContext";
 import { useSelector } from "react-redux";
 import LogoutButton from "../components/LogoutButton";
+import { FaBell } from "react-icons/fa";
 
 // Google Maps Config
 const libraries = ["places"];
@@ -26,8 +27,10 @@ const ProfileHeader = () => {
   const [location, setLocation] = useState("");
   const [markerPosition, setMarkerPosition] = useState(defaultCenter);
   const [showUseLocation, setShowUseLocation] = useState(false);
+  const unreadNotifications = useSelector((state) => state.notifications.unread);
   const navigate = useNavigate();
   const autocompleteRef = useRef(null);
+
 
   return (
     <nav className="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
@@ -48,29 +51,38 @@ const ProfileHeader = () => {
               </span>
             )}
           </Link>
-
+        <div style={{ width: "20px" }}></div>
+        <Link to="/notifications" className="position-relative me-3">
+        <FaBell size={20} />
+        {unreadNotifications.length > 0 && (
+          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}
+          </span>
+        )}
+      </Link>
           <div style={{ width: "20px" }}></div>
 
           {userId ? (
             <>
-              <LoginButton
-                label="Profile"
-                onClick={() => navigate('/profile')}
-              />
-              <div style={{ width: "20px" }}></div>
+
 
               <LoginButton
                 label="Orders"
                 onClick={() => navigate('/orders')}
               />
+            
               <div style={{ width: "20px" }}></div>
 
               <LoginButton
-                label="Search"
+                label="Search Page"
                 onClick={() => navigate('/search')}
               />
               <div style={{ width: "20px" }}></div>
-
+              <LoginButton
+                label="Profile"
+                onClick={() => navigate('/profile')}
+              />
+              <div style={{ width: "20px" }}></div>
               <LogoutButton />
             </>
           ) : (

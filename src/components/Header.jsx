@@ -8,6 +8,8 @@ import { useCart } from "../context/CartContext"; // Import CartContext
 import { useSelector } from "react-redux";
 import LogoutButton from "../components/LogoutButton";
 import { useNavigate } from 'react-router-dom';
+import { FaBell } from "react-icons/fa";
+
 // Google Maps Config
 const libraries = ["places"];
 const containerStyle = { width: "100%", height: "300px" };
@@ -26,6 +28,8 @@ const Header = () => {
   const [location, setLocation] = useState("");
   const [markerPosition, setMarkerPosition] = useState(defaultCenter);
   const [showUseLocation, setShowUseLocation] = useState(false);
+  const unreadNotifications = useSelector((state) => state.notifications.unread);
+
   const navigate = useNavigate();
   // Handle fetching current location
   const getCurrentLocation = () => {
@@ -138,7 +142,13 @@ const Header = () => {
 
         {/* Shopping Cart, Login & Sign Up */}
         <div className="d-flex align-items-center ms-3">
-        <div className="d-flex align-items-center ms-3">
+
+
+        <div style={{ width: "20px" }}></div>
+        {userId ? (
+          
+          <>    
+                  <div className="d-flex align-items-center ms-3">
         <Link to="/cart" className="position-relative me-3">
         <FaShoppingCart size={20} />
         {cartItems.length > 0 && (
@@ -146,15 +156,43 @@ const Header = () => {
         {cartItems.length}
         </span>
         )}
+
+
+
         
         </Link>
-        </div>
+        </div>             
         <div style={{ width: "20px" }}></div>
-        {userId ? (
-          <>    <LoginButton
+        <Link to="/notifications" className="position-relative me-3">
+        <FaBell size={20} />
+        {unreadNotifications.length > 0 && (
+          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}
+          </span>
+        )}
+      </Link>
+      <div style={{ width: "20px" }}></div>
+          <LoginButton
+            label="Orders"
+            onClick={() => navigate('/orders')}
+          />
+          <div style={{ width: "20px" }}></div>
+
+        <LoginButton
+  label="Search Page"
+  onClick={() => navigate('/search')}
+/>
+<div style={{ width: "20px" }}></div>
+<LoginButton
           label="Profile"
           onClick={() => navigate('/profile')}
-        /><div style={{ width: "20px" }}></div><LogoutButton /></>
+        />
+        
+        <div style={{ width: "20px" }}></div><LogoutButton />
+
+
+        </>
+        
 
   ) : (
     <>
@@ -162,7 +200,6 @@ const Header = () => {
       label="Log in"
       onClick={() => navigate('/login')}
     />
-      <div style={{ width: "20px" }}></div>
     </>
   )}
         </div>

@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
 
       const userIdFromAuth0 = user.sub.split("|")[1];
       const userServiceUrl = `${process.env.REACT_APP_USER_SERVICE}/${userIdFromAuth0}`;
+      const notificationServiceUrl = `${process.env.REACT_APP_NOTIFICATION_SERVICE}/${userIdFromAuth0}`;
 
       try {
         // Check if user exists

@@ -8,8 +8,10 @@ export default function ChefOrderDashboard() {
   const { orders, loading, updateOrderItemStatus } = useChefOrders();
   const [selectedStatuses, setSelectedStatuses] = useState({});
 
-  const handleStatusChange = async (orderItemId, newStatus) => {
-    await updateOrderItemStatus(orderItemId, newStatus);
+  // console.log(orders)
+
+  const handleStatusChange = async (userId,chefId,orderItemId, newStatus) => {
+    await updateOrderItemStatus(userId,chefId,orderItemId, newStatus);
   };
 
   if (loading) {
@@ -87,7 +89,7 @@ export default function ChefOrderDashboard() {
                             ...prev,
                             [item.orderItemId]: newStatus,
                           }));
-                          handleStatusChange(item.orderItemId, newStatus);
+                          handleStatusChange(order.userId,order.chefId,item.orderItemId, newStatus);
                         }}
                         className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-200"
                       >

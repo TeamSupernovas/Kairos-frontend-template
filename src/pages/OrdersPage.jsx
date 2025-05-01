@@ -48,7 +48,7 @@ const OrdersPage = () => {
     }
   }, [orders]);
 
-  const cancelFullOrder = async (orderItems) => {
+  const cancelFullOrder = async (userId,chefId,orderItems) => {
     if (!orderItems || orderItems.length === 0) return;
 
     try {
@@ -56,7 +56,7 @@ const OrdersPage = () => {
         fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/${item.orderItemId}/status`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'canceled' }),
+          body: JSON.stringify({ status: "canceled" , user_id: userId, chef_id:chefId}),
         })
       ));
 
@@ -118,7 +118,7 @@ const OrdersPage = () => {
                       <button
                         onClick={() => {
                           if (window.confirm("Are you sure you want to cancel this entire order?")) {
-                            cancelFullOrder(order_items);
+                            cancelFullOrder(order.userId,order.chefId ,order_items);
                           }
                         }}
                         className="mt-2 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs"

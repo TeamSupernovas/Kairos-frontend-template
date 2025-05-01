@@ -21,7 +21,8 @@ import { OrdersProvider } from "./context/OrdersContext";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ChefOrderProvider } from "./context/ChefOrderContext";
-
+import { NotificationProvider } from "./components/NotificationProvider";
+import NotificationPage from "./pages/NotificationPage"
 function App() {  
   const chefId = "chefid1";
   return (
@@ -29,6 +30,7 @@ function App() {
       <ChefOrderProvider>
     <AuthProviderComponent>
       <AuthProvider>
+      <NotificationProvider>
         <DishSearchProvider>
         <OrdersProvider>
         <CartProvider>
@@ -38,6 +40,7 @@ function App() {
                 <Route path="/" element={<SearchPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/profile" element={<ProfilePage />}/>
+                <Route path="/notifications" element={<NotificationPage />}/>
                 <Route path="/search">
                   <Route index element={<SearchPage />} />
                 </Route>
@@ -68,7 +71,9 @@ function App() {
           </CartProvider>
           </OrdersProvider>
         </DishSearchProvider>
+        </NotificationProvider>
       </AuthProvider>
+    
     </AuthProviderComponent>
     </ChefOrderProvider>
     </Provider>
