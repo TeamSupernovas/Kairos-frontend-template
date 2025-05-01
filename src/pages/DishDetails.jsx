@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // Import Cart Context
 import ProfileHeader from "../components/ProfileHeader"; // Import Profile Header
+import DishRatingReviews from "./DishRatingReview";
 
 const DishDetails = () => {
   const { id } = useParams(); // Get the dish ID from URL
@@ -106,6 +107,7 @@ const DishDetails = () => {
             Add to Cart
           </button>
         </div>
+        {dishData.dish_id && <DishRatingReviews dishId={dishData.dish_id} chefId={dishData.chef_id} />}
       </div>
     </div>
     </>

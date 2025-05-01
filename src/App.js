@@ -26,7 +26,7 @@ function App() {
   const chefId = "chefid1";
   return (
     <Provider store={store}>
-      <ChefOrderProvider chefId={chefId}>
+      <ChefOrderProvider>
     <AuthProviderComponent>
       <AuthProvider>
         <DishSearchProvider>

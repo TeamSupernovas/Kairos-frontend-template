@@ -1,17 +1,29 @@
 // src/context/ChefOrderContext.js
 import { createContext, useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const ChefOrderContext = createContext();
 
 export const useChefOrders = () => useContext(ChefOrderContext);
 
-export const ChefOrderProvider = ({ chefId, children }) => {
+export const ChefOrderProvider = ({ children }) => {
+  const userId = useSelector((state) => state.auth.userId);
+  const role = useSelector((state) => state.auth.role);
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchChefOrders = async () => {
+    if (!userId ) {
+      console.warn("You must be logged in as a chef to fetch orders.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8008/orders/provider?chef_id=${chefId}`);
+      console.log("hello")
+      const response = await fetch(`http://localhost:8008/orders/provider?chef_id=${userId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch chef orders");
       }
@@ -38,18 +50,17 @@ export const ChefOrderProvider = ({ chefId, children }) => {
         throw new Error("Failed to update order item status");
       }
 
-      // Refresh orders after successful update
-      await fetchChefOrders();
+      await fetchChefOrders(); // Refresh
     } catch (error) {
       console.error("Failed to update order item status:", error);
     }
   };
 
   useEffect(() => {
-    if (chefId) {
+    if (userId ) {
       fetchChefOrders();
     }
-  }, [chefId]);
+  }, [userId, role]);
 
   return (
     <ChefOrderContext.Provider value={{ orders, loading, fetchChefOrders, updateOrderItemStatus }}>
