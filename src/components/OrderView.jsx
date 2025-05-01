@@ -1,32 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+const fallbackImage = "https://img.icons8.com/color/96/meal.png";
 
 const statusColor = (status) => {
   switch (status?.toLowerCase()) {
-    case 'completed':
-      return 'text-green-600';
-    case 'pending':
-      return 'text-yellow-600';
-    case 'canceled':
-      return 'text-red-600';
+    case "completed":
+      return "text-green-600";
+    case "pending":
+      return "text-yellow-600";
+    case "canceled":
+      return "text-red-600";
     default:
-      return 'text-gray-600';
+      return "text-gray-600";
   }
 };
 
 const OrderView = ({ orderWrapper, color }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [dishImages, setDishImages] = useState({});
   const order = orderWrapper.order;
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
+  // Fetch all images when expanded
+  useEffect(() => {
+    if (!isExpanded || !orderWrapper?.order_items?.length) return;
+
+    const fetchImages = async () => {
+      const newImages = {};
+
+      await Promise.all(
+        orderWrapper.order_items.map(async (item) => {
+          try {
+            const res = await fetch(`http://localhost:8080/images/dish/${item.dishId}`);
+            const data = await res.json();
+            if (data?.[0]?.image_url) {
+              newImages[item.dishId] = data[0].image_url;
+            } else {
+              newImages[item.dishId] = fallbackImage;
+            }
+          } catch (err) {
+            console.error("Image fetch failed for", item.dishId);
+            newImages[item.dishId] = fallbackImage;
+          }
+        })
+      );
+
+      setDishImages((prev) => ({ ...prev, ...newImages }));
+    };
+
+    fetchImages();
+  }, [isExpanded, orderWrapper.order_items]);
+
   return (
-    <li
-      key={order?.orderId}
-      className="p-3 bg-gray-100 rounded-lg shadow-sm space-y-2"
-    >
+    <li className="p-3 bg-gray-100 rounded-lg shadow-sm space-y-2">
       {/* Order Header */}
       <div
         className="flex justify-between items-center cursor-pointer"
@@ -60,16 +90,30 @@ const OrderView = ({ orderWrapper, color }) => {
           {orderWrapper.order_items.map((item) => (
             <li
               key={item.orderItemId}
-              className="flex justify-between items-center text-sm bg-white p-2 rounded-md shadow"
+              className="flex items-center gap-3 text-sm bg-white p-2 rounded-md shadow"
             >
-              <div>
+              {/* Dish Image */}
+              <img
+                src={dishImages[item.dishId] || fallbackImage}
+                alt={`Dish ${item.dishId}`}
+                className="rounded"
+                style={{ width: 60, height: 60, objectFit: "cover" }}
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImage;
+                }}
+              />
+
+              {/* Dish Info */}
+              <div className="flex-grow">
                 <p className="font-semibold text-gray-700">Dish ID: {item.dishId}</p>
-                <p className="text-gray-400">Quantity: {item.quantity}</p>
+                <p className="text-gray-500">Quantity: {item.quantity}</p>
                 <p className={`text-xs ${statusColor(item.dishOrderStatus)}`}>
-                  {item.dishOrderStatus ? item.dishOrderStatus.toUpperCase() : "Status Unknown"}
+                  {item.dishOrderStatus?.toUpperCase() || "Status Unknown"}
                 </p>
               </div>
-              <div className="text-right font-semibold">
+
+              {/* Price */}
+              <div className="text-end font-semibold whitespace-nowrap">
                 ${item.pricePerUnit * item.quantity}
               </div>
             </li>
