@@ -23,7 +23,7 @@ export const ChefOrderProvider = ({ children }) => {
     setLoading(true);
     try {
       console.log("hello")
-      const response = await fetch(`http://localhost:8008/orders/provider?chef_id=${userId}`);
+      const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/provider?chef_id=${userId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch chef orders");
       }
@@ -38,7 +38,7 @@ export const ChefOrderProvider = ({ children }) => {
 
   const updateOrderItemStatus = async (orderItemId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:8008/orders/${orderItemId}/status`, {
+      const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/${orderItemId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

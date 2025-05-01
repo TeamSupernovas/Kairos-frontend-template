@@ -25,8 +25,8 @@ const DishRatingReviews = ({ dishId, chefId }) => {
     async function fetchRatings() {
       try {
         const [avgRes, reviewRes] = await Promise.all([
-          fetch(`http://localhost:8090/ratings/dish/${dishId}/average`),
-          fetch(`http://localhost:8090/dishes/${dishId}/ratings`)
+          fetch(`${process.env.REACT_APP_RATING_SERVICE}/ratings/dish/${dishId}/average`),
+          fetch(`${process.env.REACT_APP_RATING_SERVICE}/dishes/${dishId}/ratings`)
         ]);
         const avgData = await avgRes.json();
         const reviewData = await reviewRes.json();
@@ -50,7 +50,7 @@ const DishRatingReviews = ({ dishId, chefId }) => {
     const payload = { dishId, chefId, userId, rating: newRating, reviewText };
 
     try {
-      const res = await fetch("http://localhost:8090/ratings", {
+      const res = await fetch(`${process.env.REACT_APP_RATING_SERVICE}/ratings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

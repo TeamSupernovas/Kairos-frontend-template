@@ -31,7 +31,7 @@ const OrdersPage = () => {
       if (dishImages[item.dishId]) return; // Skip if already fetched
 
       try {
-        const res = await fetch(`http://localhost:8080/images/dish/${item.dishId}`);
+        const res = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/images/dish/${item.dishId}`);
         const data = await res.json();
         imageMap[item.dishId] = data?.[0]?.image_url || fallbackImage;
       } catch (err) {
@@ -53,7 +53,7 @@ const OrdersPage = () => {
 
     try {
       await Promise.all(orderItems.map(item =>
-        fetch(`http://localhost:8008/orders/${item.orderItemId}/status`, {
+        fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/${item.orderItemId}/status`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'canceled' }),

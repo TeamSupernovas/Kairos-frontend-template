@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const fallbackImage = "https://img.icons8.com/color/96/meal.png";
+const fallbackImage = process.env.REACT_APP_FALLBACK_IMAGE;
 
 const DishImage = ({ dishId, alt = "Dish", width = 60, height = 60, className = "" }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -9,7 +9,7 @@ const DishImage = ({ dishId, alt = "Dish", width = 60, height = 60, className = 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/images/dish/${dishId}`);
+        const res = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/images/dish/${dishId}`);
         const data = await res.json();
         const url = data?.[0]?.image_url;
         setImageUrl(url || fallbackImage);

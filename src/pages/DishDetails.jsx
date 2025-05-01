@@ -15,7 +15,7 @@ const DishDetails = () => {
       if (!id) {
         return;
       }
-      const response = await fetch(`http://localhost:8080/dishes/${id}`);
+      const response = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch dish details for " + id);
       }

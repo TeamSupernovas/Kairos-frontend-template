@@ -33,7 +33,7 @@ export const OrdersProvider = ({ children }) => {
     if (!userId) return;
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8008/orders/?user_id=${userId}`);
+      const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/?user_id=${userId}`);
       const data = await response.json();
       const rawOrders = data.orders || [];
   

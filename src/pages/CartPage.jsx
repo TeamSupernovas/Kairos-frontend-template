@@ -40,7 +40,7 @@ const CartPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8008/orders/", {
+      const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

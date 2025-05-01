@@ -50,7 +50,7 @@ const ProfilePage = () => {
       if (activeTab !== "REVIEWS" || !userId) return;
       setLoadingReviews(true);
       try {
-        const res = await fetch(`http://localhost:8090/users/${userId}/ratings`);
+        const res = await fetch(`${process.env.REACT_APP_RATING_SERVICE}/users/${userId}/ratings`);
         const data = await res.json();
         setUserReviews(data || []);
       } catch (err) {

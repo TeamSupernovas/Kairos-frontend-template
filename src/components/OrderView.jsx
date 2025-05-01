@@ -35,7 +35,7 @@ const OrderView = ({ orderWrapper, color }) => {
       await Promise.all(
         orderWrapper.order_items.map(async (item) => {
           try {
-            const res = await fetch(`http://localhost:8080/images/dish/${item.dishId}`);
+            const res = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/images/dish/${item.dishId}`);
             const data = await res.json();
             if (data?.[0]?.image_url) {
               newImages[item.dishId] = data[0].image_url;

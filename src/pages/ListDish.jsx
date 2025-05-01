@@ -125,7 +125,7 @@ const ListDish = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/dishes", {
+      const response = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes`, {
         method: "POST",
         body: formData,
       });

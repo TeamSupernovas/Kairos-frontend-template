@@ -16,7 +16,7 @@ const DishCard = ({ DishName, ChefID, AvailablePortions, DishID }) => {
         return;
       }
       const response = await fetch(
-        `http://localhost:8080/images/dish/${DishID}`
+        `${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/images/dish/${DishID}`
       );
 
       if (!response.ok) {
