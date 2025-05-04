@@ -4,30 +4,42 @@ import { useSelector } from 'react-redux';
 const OrdersContext = createContext();
 
 const determineOrderStatus = (orderItems) => {
-    if (!orderItems || orderItems.length === 0) return "pending"; // Default
-  
-    const statuses = orderItems.map(item => item.dishOrderStatus?.toLowerCase());
-  
-    const allCanceled = statuses.every(status => status === "canceled");
-    const allCompleted = statuses.every(status => status === "completed");
-    const allPending = statuses.every(status => status === "pending");
-    const allConfirmed = statuses.every(status => status === "confirmed");
-    const allReady = statuses.every(status => status === "ready");
-  
-    if (allCanceled) return "canceled";
-    if (allCompleted) return "completed";
-    if (allPending) return "pending";
-    if (allConfirmed) return "confirmed";
-    if (allReady) return "ready";
-  
-    return "pending"; // Mixed statuses
-  };
-  
+  if (!orderItems || orderItems.length === 0) return "pending";
+
+  const statusCounts = orderItems.reduce((acc, item) => {
+    const status = item.dishOrderStatus?.toLowerCase();
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {});
+
+  const priority = ["pending", "confirmed", "ready", "completed", "canceled"];
+
+  for (const status of priority) {
+    if (statusCounts[status]) {
+      return status;
+    }
+  }
+
+  return "pending";
+};
 
 export const OrdersProvider = ({ children }) => {
   const userId = useSelector((state) => state.auth.userId);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const fetchDishName = async (dishId) => {
+    console.log(dishId)
+    try {
+      const response = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${dishId}`);
+      const data = await response.json();
+       console.log(data)
+      return data.dish?.dish_name || "Unknown Dish";
+    } catch (error) {
+      console.error(`Failed to fetch dish name for ${dishId}:`, error);
+      return "Unknown Dish";
+    }
+  };
 
   const fetchOrders = async () => {
     if (!userId) return;
@@ -36,28 +48,38 @@ export const OrdersProvider = ({ children }) => {
       const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/?user_id=${userId}`);
       const data = await response.json();
       const rawOrders = data.orders || [];
-  
-      // 👇 Update each order with the correct calculated status
-      const updatedOrders = rawOrders.map(orderWrapper => {
+
+      const updatedOrders = await Promise.all(rawOrders.map(async (orderWrapper) => {
         const updatedStatus = determineOrderStatus(orderWrapper.order_items);
+
+        console.log(data)
+
+        const orderItemsWithNames = await Promise.all(orderWrapper.order_items.map(async (item) => {
+          const dishName = await fetchDishName(item.dishId);
+          return {
+            ...item,
+            dish_name: dishName,
+          };
+        }));
+
         return {
           ...orderWrapper,
           order: {
             ...orderWrapper.order,
             orderStatus: updatedStatus,
           },
+          order_items: orderItemsWithNames,
         };
-      });
-  
+      }));
+
       setOrders(updatedOrders);
-      
+
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchOrders();

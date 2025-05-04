@@ -29,7 +29,7 @@ const CartItemCard = ({ item, onIncrement, onDecrement, onRemove }) => {
 
       <div className="flex-grow-1 d-flex justify-content-between align-items-center">
         <div>
-          <h6 className="mb-1 fw-semibold">{item.dish_name || item.dish_id}</h6>
+          <h6 className="mb-1 fw-semibold">{item.dish_name }</h6>
           <div className="d-flex align-items-center">
             <button
               onClick={() => onDecrement(item.dish_id)}

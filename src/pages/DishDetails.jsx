@@ -35,7 +35,7 @@ const DishDetails = () => {
 
     const dishToAdd = {
       id: dishData.dish_id,
-      name: dishData.dish_name,
+      dish_name: dishData.dish_name,
       chef_id: dishData.chef_id,
       available_portions: dishData.available_portions,
       price: dishData.price,

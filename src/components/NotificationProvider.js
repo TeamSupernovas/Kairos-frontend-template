@@ -23,9 +23,14 @@ export const NotificationProvider = ({ children }) => {
     };
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      console.log("New notification:", message);
-      dispatch(addNotification(message));
+      try{
+        const message = JSON.parse(event.data);
+        console.log("New notification:", message);
+        dispatch(addNotification(message));
+      }
+      catch (e){
+        
+      }
     };
 
     socket.onerror = (err) => {
@@ -47,8 +52,13 @@ export const NotificationProvider = ({ children }) => {
         try {
           const response = await fetch(`${process.env.REACT_APP_NOTIFICATION_SERVICE}/${userId}/initial`);
           if (response.ok) {
-            const data = await response.json();
-            dispatch(setInitialNotifications(data));
+            try{
+              const data = await response.json();
+              dispatch(setInitialNotifications(data));
+            }
+            catch (e){
+
+            }
           } else {
             console.error("Failed to fetch initial notifications");
           }
