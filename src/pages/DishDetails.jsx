@@ -120,7 +120,7 @@ const DishDetails = () => {
             Add to Cart
           </button>
         </div>
-        {dishData.dish_id && <DishRatingReviews dishId={dishData.dish_id} chefId={dishData.chef_id} />}
+        {dishData.dish_id && <DishRatingReviews dishId={dishData.dish_id} chefId={dishData.chef_id} dishName={dishData.dish_name} chefName={dishData.chef_name || dishData.chef_id} />}
       </div>
     </div>
     </>

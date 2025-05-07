@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import ReviewList from "./components/ReviewList";
 
-const DishRatingReviews = ({ dishId, chefId }) => {
+const DishRatingReviews = ({ dishId, dishName, chefId, chefName }) => {
   const [averageRating, setAverageRating] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +32,7 @@ const DishRatingReviews = ({ dishId, chefId }) => {
         const reviewData = await reviewRes.json();
         setAverageRating(avgData.averageRating || 0);
         setReviews(reviewData || []);
+         console.log(reviews)
       } catch (err) {
         console.error("Error loading reviews:", err);
       } finally {
@@ -44,10 +45,22 @@ const DishRatingReviews = ({ dishId, chefId }) => {
 
   async function handleSubmitReview(e) {
     e.preventDefault();
-    if (!userId) return alert("Login required to submit a review.");
+    if (!userId || !user?.name) {
+      return alert("Login required to submit a review.");
+    }
 
     setSubmitting(true);
-    const payload = { dishId, chefId, userId, rating: newRating, reviewText };
+
+    const payload = {
+      dishId,
+      dishName,
+      chefId,
+      chefName,
+      userId,
+      userName: user.name,
+      rating: newRating,
+      reviewText
+    };
 
     try {
       const res = await fetch(`${process.env.REACT_APP_RATING_SERVICE}/ratings`, {
@@ -56,10 +69,12 @@ const DishRatingReviews = ({ dishId, chefId }) => {
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error("Failed to submit review");
+      if (!res.ok) {
+        console.log(res)
+        throw new Error("Failed to submit review");}
 
       const newReview = await res.json();
-      setReviews((prev) => [newReview, ...prev]);
+      setReviews((prev) => [newReview, ...(Array.isArray(prev) ? prev : [])]);
       setReviewText("");
       setNewRating(5);
     } catch (err) {
@@ -116,7 +131,7 @@ const DishRatingReviews = ({ dishId, chefId }) => {
       </form>
 
       {/* Reusable review list */}
-      <ReviewList reviews={reviews} />
+      <ReviewList reviews={reviews} userDetails={true} />
 
       {/* Glass style */}
       <style jsx>{`

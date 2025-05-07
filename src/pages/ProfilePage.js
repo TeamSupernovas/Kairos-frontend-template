@@ -36,7 +36,8 @@ const ProfilePage = () => {
       try {
         const res = await fetch(`${process.env.REACT_APP_USER_SERVICE}/${userId}`);
         const data = await res.json();
-        setUserData({ name: data.name, location: data.location });
+  
+        setUserData({ name: data.name, location: data.location, role: data.role });
         setLocation(data.location);
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -44,23 +45,28 @@ const ProfilePage = () => {
     };
     fetchUserDetails();
   }, [userId]);
-
+  
   useEffect(() => {
-    const fetchUserReviews = async () => {
-      if (activeTab !== "REVIEWS" || !userId) return;
+    const fetchReviews = async () => {
+      if (activeTab !== "REVIEWS" || !userId || !userData?.role) return;
       setLoadingReviews(true);
+      const endpoint =
+        userData.role === "CHEF"
+          ? `${process.env.REACT_APP_RATING_SERVICE}/ratings/chef/${userId}`
+          : `${process.env.REACT_APP_RATING_SERVICE}/users/${userId}/ratings`;
       try {
-        const res = await fetch(`${process.env.REACT_APP_RATING_SERVICE}/users/${userId}/ratings`);
+        const res = await fetch(endpoint);
         const data = await res.json();
         setUserReviews(data || []);
       } catch (err) {
-        console.error("Failed to fetch user reviews:", err);
+        console.error("Failed to fetch reviews:", err);
       } finally {
         setLoadingReviews(false);
       }
     };
-    fetchUserReviews();
-  }, [activeTab, userId]);
+  
+    fetchReviews();
+  }, [activeTab, userId, userData?.role]);  
 
   const currentOrders = orders?.filter(
     (o) => !["completed", "canceled"].includes(o.order?.orderStatus?.toLowerCase())
@@ -115,7 +121,12 @@ const ProfilePage = () => {
       return loadingReviews ? (
         <p className="text-gray-500 text-center">Loading your reviews...</p>
       ) : (
-        <ReviewList reviews={userReviews} />
+        <ReviewList
+        reviews={userReviews}
+        userDetails={userData?.role === "CHEF"}
+        dishDetails={userData?.role !== "CHEF"}
+      />
+      
       );
     }
     return null;
