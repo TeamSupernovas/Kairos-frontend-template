@@ -37,21 +37,29 @@ const OrderView = ({ orderWrapper }) => {
         className="flex justify-between items-start cursor-pointer"
         onClick={toggleExpand}
       >
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-gray-800">
-            Order #{order?.orderId?.slice(0, 8) || "N/A"}
-          </h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <CalendarDays className="w-4 h-4" />
-            {order?.createdAt
-              ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })
-              : "Unknown date"}
-          </div>
-        </div>
+       <div className="space-y-1">
+  <h3 className="text-lg font-semibold text-gray-800">
+    Order #{order?.orderId?.slice(0, 8) || "N/A"}
+  </h3>
+
+  <div className="flex items-center gap-2 text-sm text-gray-500">
+    <CalendarDays className="w-4 h-4" />
+    {order?.createdAt
+      ? new Date(order.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "Unknown date"}
+  </div>
+
+  {order?.chefName && (
+    <div className="flex items-center gap-2 text-sm text-gray-500">
+      👨‍🍳 <span>Chef: {order.chefName}</span>
+    </div>
+  )}
+</div>
+
 
         <div className="flex items-center gap-2">
           <span
@@ -83,7 +91,7 @@ const OrderView = ({ orderWrapper }) => {
 
               <div className="flex-grow space-y-1">
                 <p className="font-medium text-gray-800 hover:underline truncate">
-                  Dish ID: {item.dish_name}
+                  Dish ID: {item.dishName}
                 </p>
                 <div className="flex items-center text-xs text-gray-500 gap-2">
                   <span>Qty: {item.quantity}</span>

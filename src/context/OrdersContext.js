@@ -12,6 +12,7 @@ const determineOrderStatus = (orderItems) => {
     return acc;
   }, {});
 
+  // Priority order: pending > confirmed > ready > completed > canceled
   const priority = ["pending", "confirmed", "ready", "completed", "canceled"];
 
   for (const status of priority) {
@@ -20,26 +21,14 @@ const determineOrderStatus = (orderItems) => {
     }
   }
 
-  return "pending";
+  return "pending"; 
 };
+  
 
 export const OrdersProvider = ({ children }) => {
   const userId = useSelector((state) => state.auth.userId);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const fetchDishName = async (dishId) => {
-    console.log(dishId)
-    try {
-      const response = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${dishId}`);
-      const data = await response.json();
-       console.log(data)
-      return data.dish?.dish_name || "Unknown Dish";
-    } catch (error) {
-      console.error(`Failed to fetch dish name for ${dishId}:`, error);
-      return "Unknown Dish";
-    }
-  };
 
   const fetchOrders = async () => {
     if (!userId) return;
@@ -48,38 +37,29 @@ export const OrdersProvider = ({ children }) => {
       const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/?user_id=${userId}`);
       const data = await response.json();
       const rawOrders = data.orders || [];
-
-      const updatedOrders = await Promise.all(rawOrders.map(async (orderWrapper) => {
+      console.log(data);
+  
+      // Update each order with the correct calculated status
+      const updatedOrders = rawOrders.map(orderWrapper => {
         const updatedStatus = determineOrderStatus(orderWrapper.order_items);
-
-        console.log(data)
-
-        const orderItemsWithNames = await Promise.all(orderWrapper.order_items.map(async (item) => {
-          const dishName = await fetchDishName(item.dishId);
-          return {
-            ...item,
-            dish_name: dishName,
-          };
-        }));
-
         return {
           ...orderWrapper,
           order: {
             ...orderWrapper.order,
             orderStatus: updatedStatus,
           },
-          order_items: orderItemsWithNames,
         };
-      }));
-
+      });
+  
       setOrders(updatedOrders);
-
+      
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchOrders();

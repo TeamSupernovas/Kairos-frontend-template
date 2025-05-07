@@ -16,7 +16,7 @@ const CartPage = () => {
   const { user, isAuthenticated } = useAuth();
 
   const placeOrder = async () => {
-    if (!isAuthenticated || !user?.sub) {
+    if (!isAuthenticated || !user?.sub|| !user) {
       alert("You must be logged in to place an order.");
       return;
     }
@@ -29,15 +29,20 @@ const CartPage = () => {
 
     const orderPayload = {
       user_id: userId,
+      user_name: user.name,
       chef_id: chefId,
+      chef_name: cartItems[0]?.chef_name || "Unknown Chef", 
       total_price: total,
       order_items: cartItems.map((item) => ({
         dish_id: item.dish_id,
+        dish_name: item.dish_name,
         quantity: item.quantity,
         dish_order_status: item.dish_order_status,
         price_per_unit: item.price_per_unit
       }))
     };
+
+    console.log(orderPayload)
 
     try {
       const response = await fetch(`${process.env.REACT_APP_ORDERS_SERVICE}/orders/`, {

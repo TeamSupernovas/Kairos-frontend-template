@@ -16,9 +16,29 @@ export default function ChefOrderDashboard() {
   const { orders, loading, updateOrderItemStatus } = useChefOrders();
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [activeTab, setActiveTab] = useState("new");
-
-  const handleStatusChange = async (userId, chefId, orderItemId, newStatus) => {
-    await updateOrderItemStatus(userId, chefId, orderItemId, newStatus);
+  console.log("----------------")
+console.log(orders);
+console.log("----------------")
+  const handleStatusChange = async (
+    orderId,
+    userId,
+    userName,
+    chefId,
+    chefName,
+    orderItemId,
+    dishName,
+    newStatus
+  ) => {
+    await updateOrderItemStatus(
+      orderId,
+      userId,
+      chefId,
+      userName,
+      chefName,
+      dishName,
+      orderItemId,
+      newStatus
+    );
   };
 
   if (loading) {
@@ -31,9 +51,10 @@ export default function ChefOrderDashboard() {
 
   const currentStatuses = tabConfig[activeTab].statuses;
 
-  // Filter orders to include only those with relevant items
   const filteredOrders = orders.filter(({ order_items }) =>
-    order_items.some(item => currentStatuses.includes(item.dishOrderStatus))
+    order_items.some((item) =>
+      currentStatuses.includes(item.dishOrderStatus)
+    )
   );
 
   return (
@@ -63,7 +84,7 @@ export default function ChefOrderDashboard() {
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {filteredOrders.map(({ order, order_items }) => {
-            const visibleItems = order_items.filter(item =>
+            const visibleItems = order_items.filter((item) =>
               currentStatuses.includes(item.dishOrderStatus)
             );
 
@@ -86,13 +107,13 @@ export default function ChefOrderDashboard() {
                   </div>
                   <div>
                     <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-full capitalize">
-                      {order.userId}
+                      {order.userName || order.userId}
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {visibleItems.map(item => (
+                  {visibleItems.map((item) => (
                     <div
                       key={item.orderItemId}
                       className="flex items-center justify-between border-t pt-4"
@@ -102,7 +123,9 @@ export default function ChefOrderDashboard() {
                         <DishImage dishId={item.dishId} width={60} height={60} />
                         <div>
                           <p className="font-medium text-gray-700">
-                            Dish ID: {item.dish_name}
+                            {item.dishName
+                              ? item.dishName
+                              : `Dish ID: ${item.dishId}`}
                           </p>
                           <p className="text-gray-500 text-sm">
                             Quantity: {item.quantity}
@@ -127,9 +150,13 @@ export default function ChefOrderDashboard() {
                               [item.orderItemId]: newStatus
                             }));
                             handleStatusChange(
+                              order.orderId,
                               order.userId,
+                              order.userName,
                               order.chefId,
+                              order.chefName,
                               item.orderItemId,
+                              item.dishName,
                               newStatus
                             );
                           }}

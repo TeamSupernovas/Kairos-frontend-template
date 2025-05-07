@@ -12,16 +12,28 @@ const DishDetails = () => {
 
   useEffect(() => {
     async function fetchDishDetails() {
-      if (!id) {
-        return;
+      if (!id) return;
+  
+      try {
+        const dishRes = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${id}`);
+        if (!dishRes.ok) throw new Error("Failed to fetch dish details");
+  
+        const dishData = await dishRes.json();
+        const dish = dishData.dish;
+        // Fetch chef name
+        const chefRes = await fetch(`${process.env.REACT_APP_USER_SERVICE}/${dish.chef_id}`);
+        if (!chefRes.ok){ 
+          throw new Error("Failed to fetch chef info");}
+  
+        const chefData = await chefRes.json();
+        dish.chef_name = chefData.name; // add chef_name to dish object
+  
+        setDishData(dish);
+        console.log("Dish and chef data loaded:", dish);
+      } catch (error) {
+       
+        console.error("Error loading dish details:", error);
       }
-      const response = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch dish details for " + id);
-      }
-      const data = await response.json();
-      setDishData(data.dish);
-      console.log("details set for ", id, ":", data);
     }
     fetchDishDetails();
   }, [id]);
@@ -37,6 +49,7 @@ const DishDetails = () => {
       id: dishData.dish_id,
       dish_name: dishData.dish_name,
       chef_id: dishData.chef_id,
+      chef_name: dishData.chef_name,
       available_portions: dishData.available_portions,
       price: dishData.price,
       quantity: quantity, // Set quantity based on user selection
@@ -62,7 +75,7 @@ const DishDetails = () => {
         </div>
         <div className="col-md-6">
           <h2 className="fw-bold">{dishData.dish_name}</h2>
-          <p className="text-muted">By {dishData.chef_id}</p>
+          <p className="text-muted">By { dishData?.chef_name || dishData.chef_id }</p>
           <h4 className="fw-bold text-success">
             ${dishData.price && dishData.price.toFixed(2)}
           </h4>
