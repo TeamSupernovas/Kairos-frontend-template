@@ -16,66 +16,74 @@ import ChefOrderDashboard from "./pages/ChefOrderDashboard";
 import ListDish from "./pages/ListDish";
 import MapView from "./pages/MapView";
 import { DishSearchProvider } from "./context/DishSearchContext";
-import { CartProvider } from "./context/CartContext"; 
+import { CartProvider } from "./context/CartContext";
 import { OrdersProvider } from "./context/OrdersContext";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ChefOrderProvider } from "./context/ChefOrderContext";
 import { NotificationProvider } from "./components/NotificationProvider";
-import NotificationPage from "./pages/NotificationPage"
-function App() {  
+import NotificationPage from "./pages/NotificationPage";
+import { MapMarkerProvider } from "./context/MapMarkerContext";
+function App() {
   const chefId = "chefid1";
   return (
     <Provider store={store}>
       <ChefOrderProvider>
-    <AuthProviderComponent>
-      <AuthProvider>
-      <NotificationProvider>
-        <DishSearchProvider>
-        <OrdersProvider>
-        <CartProvider>
-          <Router>
-            <div className="flex flex-col min-h-screen">
-              <Routes>
-                <Route path="/" element={<SearchPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/profile" element={<ProfilePage />}/>
-                <Route path="/notifications" element={<NotificationPage />}/>
-                <Route path="/search">
-                  <Route index element={<SearchPage />} />
-                </Route>
-                <Route
-                  path="/dish-list"
-                  element={
-                    <div className="container-fluid flex-grow-1">
-                      <div className="row h-100">
-                        <div className="col-md-6 overflow-auto">
-                          <DishList />
-                        </div>
+        <AuthProviderComponent>
+          <AuthProvider>
+            <NotificationProvider>
+              <DishSearchProvider>
+                <OrdersProvider>
+                  <CartProvider>
+                    <MapMarkerProvider>
+                      <Router>
+                        <div className="flex flex-col min-h-screen">
+                          <Routes>
+                            <Route path="/" element={<SearchPage />} />
+                            <Route path="/login" element={<LoginPage />} />
+                            <Route path="/profile" element={<ProfilePage />} />
+                            <Route
+                              path="/notifications"
+                              element={<NotificationPage />}
+                            />
+                            <Route path="/search">
+                              <Route index element={<SearchPage />} />
+                            </Route>
+                            <Route
+                              path="/dish-list"
+                              element={
+                                <div className="container-fluid flex-grow-1">
+                                  <div className="row h-100">
+                                    <div className="col-md-6 overflow-auto">
+                                      <DishList />
+                                    </div>
 
-                        <div className="col-md-6 p-0">
-                          <MapView />
+                                    <div className="col-md-6 p-0">
+                                      <MapView />
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                            />
+                            <Route path="/dish/:id" element={<DishDetails />} />
+                            <Route path="/list-dish" element={<ListDish />} />
+                            <Route path="/cart" element={<CartPage />} />
+                            <Route path="/orders" element={<OrdersPage />} />
+                            <Route
+                              path="/dashboard"
+                              element={<ChefOrderDashboard />}
+                            />
+                          </Routes>
                         </div>
-                      </div>
-                    </div>
-                  }
-                />
-                <Route path="/dish/:id" element={<DishDetails />} />
-                <Route path="/list-dish" element={<ListDish />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/dashboard" element={  <ChefOrderDashboard />}/>
-              </Routes>
-            </div>
-          </Router>
-          </CartProvider>
-          </OrdersProvider>
-        </DishSearchProvider>
-        </NotificationProvider>
-      </AuthProvider>
-    
-    </AuthProviderComponent>
-    </ChefOrderProvider>
+                      </Router>
+                    </MapMarkerProvider>
+                  </CartProvider>
+                </OrdersProvider>
+              </DishSearchProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </AuthProviderComponent>
+      </ChefOrderProvider>
     </Provider>
   );
 }

@@ -7,14 +7,13 @@ import SearchButton from "../components/SearchButton";
 import { useCart } from "../context/CartContext"; // Import CartContext
 import { useSelector } from "react-redux";
 import LogoutButton from "../components/LogoutButton";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
+import { useMapMarkers } from "../context/MapMarkerContext";
 
 // Google Maps Config
 const libraries = ["places"];
 const containerStyle = { width: "100%", height: "300px" };
-const defaultCenter = { lat: 37.7749, lng: -122.4194 };
-
 
 const Header = () => {
   const { isLoaded } = useJsApiLoader({
@@ -22,13 +21,15 @@ const Header = () => {
     libraries: libraries,
   });
   const userId = useSelector((state) => state.auth.userId);
-  const { cartItems } = useCart(); 
+  const { cartItems } = useCart();
 
   const [radius, setRadius] = useState("");
   const [location, setLocation] = useState("");
-  const [markerPosition, setMarkerPosition] = useState(defaultCenter);
+  const { markerPosition, setMarkerPosition } = useMapMarkers();
   const [showUseLocation, setShowUseLocation] = useState(false);
-  const unreadNotifications = useSelector((state) => state.notifications.unread);
+  const unreadNotifications = useSelector(
+    (state) => state.notifications.unread
+  );
 
   const navigate = useNavigate();
   // Handle fetching current location
@@ -142,66 +143,52 @@ const Header = () => {
 
         {/* Shopping Cart, Login & Sign Up */}
         <div className="d-flex align-items-center ms-3">
-
-
-        <div style={{ width: "20px" }}></div>
-        {userId ? (
-          
-          <>    
-                  <div className="d-flex align-items-center ms-3">
-        <Link to="/cart" className="position-relative me-3">
-        <FaShoppingCart size={20} />
-        {cartItems.length > 0 && (
-        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-        {cartItems.length}
-        </span>
-        )}
-
-
-
-        
-        </Link>
-        </div>             
-        <div style={{ width: "20px" }}></div>
-        <Link to="/notifications" className="position-relative me-3">
-        <FaBell size={20} />
-        {unreadNotifications.length > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}
-          </span>
-        )}
-      </Link>
-      <div style={{ width: "20px" }}></div>
-          <LoginButton
-            label="Orders"
-            onClick={() => navigate('/orders')}
-          />
           <div style={{ width: "20px" }}></div>
+          {userId ? (
+            <>
+              <div className="d-flex align-items-center ms-3">
+                <Link to="/cart" className="position-relative me-3">
+                  <FaShoppingCart size={20} />
+                  {cartItems.length > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </Link>
+              </div>
+              <div style={{ width: "20px" }}></div>
+              <Link to="/notifications" className="position-relative me-3">
+                <FaBell size={20} />
+                {unreadNotifications.length > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {unreadNotifications.length > 99
+                      ? "99+"
+                      : unreadNotifications.length}
+                  </span>
+                )}
+              </Link>
+              <div style={{ width: "20px" }}></div>
+              <LoginButton label="Orders" onClick={() => navigate("/orders")} />
+              <div style={{ width: "20px" }}></div>
 
-        <LoginButton
-  label="Search Page"
-  onClick={() => navigate('/search')}
-/>
-<div style={{ width: "20px" }}></div>
-<LoginButton
-          label="Profile"
-          onClick={() => navigate('/profile')}
-        />
-        
-        <div style={{ width: "20px" }}></div><LogoutButton />
+              <LoginButton
+                label="Search Page"
+                onClick={() => navigate("/search")}
+              />
+              <div style={{ width: "20px" }}></div>
+              <LoginButton
+                label="Profile"
+                onClick={() => navigate("/profile")}
+              />
 
-
-        </>
-        
-
-  ) : (
-    <>
-    <LoginButton
-      label="Log in"
-      onClick={() => navigate('/login')}
-    />
-    </>
-  )}
+              <div style={{ width: "20px" }}></div>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <LoginButton label="Log in" onClick={() => navigate("/login")} />
+            </>
+          )}
         </div>
       </div>
 
