@@ -13,27 +13,50 @@ const DishDetails = () => {
   useEffect(() => {
     async function fetchDishDetails() {
       if (!id) return;
-  
       try {
         const dishRes = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${id}`);
         if (!dishRes.ok) throw new Error("Failed to fetch dish details");
-  
+      
         const dishData = await dishRes.json();
         const dish = dishData.dish;
-        // Fetch chef name
-        const chefRes = await fetch(`${process.env.REACT_APP_USER_SERVICE}/${dish.chef_id}`);
-        if (!chefRes.ok){ 
-          throw new Error("Failed to fetch chef info");}
-  
-        const chefData = await chefRes.json();
-        dish.chef_name = chefData.name; // add chef_name to dish object
-  
+      
+        try {
+          const chefRes = await fetch(`${process.env.REACT_APP_USER_SERVICE}/${dish.chef_id}`);
+          if (!chefRes.ok) throw new Error("Failed to fetch chef info");
+      
+          const chefData = await chefRes.json();
+          dish.chef_name = chefData?.name || "Chef Andrew";
+        } catch (chefError) {
+          console.warn("Using dummy chef name due to error:", chefError);
+          dish.chef_name = "Chef Andrew"; // fallback dummy value
+        }
+      
         setDishData(dish);
         console.log("Dish and chef data loaded:", dish);
       } catch (error) {
-       
         console.error("Error loading dish details:", error);
       }
+      
+    //   try {
+    //     const dishRes = await fetch(`${process.env.REACT_APP_DISH_MANAGEMENT_SERVICE}/dishes/${id}`);
+    //     if (!dishRes.ok) throw new Error("Failed to fetch dish details");
+  
+    //     const dishData = await dishRes.json();
+    //     const dish = dishData.dish;
+    //     // Fetch chef name
+    //     const chefRes = await fetch(`${process.env.REACT_APP_USER_SERVICE}/${dish.chef_id}`);
+    //     if (!chefRes.ok){ 
+    //       throw new Error("Failed to fetch chef info");}
+  
+    //     const chefData = await chefRes.json();
+    //     dish.chef_name = chefData.name; // add chef_name to dish object
+  
+    //     setDishData(dish);
+    //     console.log("Dish and chef data loaded:", dish);
+    //   } catch (error) {
+       
+    //     console.error("Error loading dish details:", error);
+    //   }
     }
     fetchDishDetails();
   }, [id]);
