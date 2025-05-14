@@ -89,9 +89,13 @@ const Header = () => {
     <nav className="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
       <div className="container-fluid d-flex align-items-center">
         {/* Kairos Logo */}
-        <a className="navbar-brand fw-bold fs-4 text-success me-3" href="/">
+        <span
+        className="navbar-brand fw-bold fs-4 text-success me-3"
+        style={{ cursor: "pointer" }}
+        onClick={() => navigate("/")}
+      >
           Kairos
-        </a>
+        </span>
 
         {/* Location Input Field */}
         <div className="position-relative me-1" style={{ width: "400px" }}>

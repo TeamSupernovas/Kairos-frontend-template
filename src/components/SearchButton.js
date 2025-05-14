@@ -24,7 +24,7 @@ const SearchButton = ({ location, radius }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:9091/dishes/search?latitude=${location.lat}&longitude=${location.lng}&radius=${radiusInMeters}&pageSize=10`
+        `${process.env.REACT_APP_GEO_DISH_MANAGEMENT_SERVICE}/dishes/search?latitude=${location.lat}&longitude=${location.lng}&radius=${radiusInMeters}&pageSize=1000`
       );
 
       if (!response.ok) {
